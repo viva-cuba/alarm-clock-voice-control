@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+# win10 python 3.9.6 64-bit vivacuba1990
 import os
 import datetime
 from time import strftime
