@@ -64,7 +64,7 @@ if __name__ == '__main__':
     
     vivacuba = listen_command()
     now = datetime.datetime.now()
-    if now.hour >= 0 and now.hour < 10:
+    if now.hour >= 0 and now.hour < 10 and len(vivacuba) != 5:
         vivacuba = '0' + vivacuba
     say_message('добавить описание при включении будильника? да или нет?')
 
