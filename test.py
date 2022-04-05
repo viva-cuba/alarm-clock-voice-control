@@ -28,22 +28,58 @@ def listen_command():
     except sr.UnknownValueError:
         return "ошибка"
     except sr.RequestError as e:
-        say_message("проверь интернет")
-        return "ошибка"
+        print(e)
 
+def beginning():
+    now = strftime("%H:%M")    
+    say_message('сейчас '+ now)
+    say_message('задай время')
+    
 def do_tris_command(message):
-    message = message.lower()
+    message = message.lower()   
+    vivacuba = message
+    now = datetime.datetime.now()
+    if 'выход' in message:
+        exit()
 
-    if 'да' in message:
-            say_message('диктуй')
-            zapis = listen_command()
-            file = open('C:/assistent_1/budilnic/zap.txt', 'w', encoding='utf-8')
-            file.write(zapis)
-            file.close()
-            say_message('я записала ' + zapis + ' время установлено на ' + vivacuba )
+    if  len(vivacuba) == 4:
+        vivacuba = '0' + vivacuba
 
-    elif 'нет' in message:
-            say_message('хорошо, время установлено на ' + vivacuba)
+    if len(vivacuba) <= 4 or len(vivacuba) >= 6:
+        say_message('похоже неправильно задал время, начнём сначала')
+        return beginning()
+
+    say_message('добавить описание при включении будильника?')
+    message = listen_command()
+
+    if 'да' in message or 'давай' in message or 'ну давай' in message or 'добавь' in message:
+        say_message('диктуй')
+        zapis = listen_command()
+        file = open('zap.txt', 'w', encoding='utf-8')
+        file.write(zapis)
+        file.close()
+        say_message('я записала, ' + zapis + ' время установлено на ' + vivacuba )
+        
+    if 'нет' in message or 'не надо' in message or 'не стоит' in message:
+        say_message('хорошо, время установлено на ' + vivacuba)
+
+    
+
+    while True:
+        now = datetime.datetime.now()
+        now = strftime("%H:%M")
+        time.sleep(10)
+        if  now == vivacuba:
+            winsound.Beep(2500,1500)
+            if os.path.exists('zap.txt'):
+                f = open('zap.txt', 'r', encoding='utf-8')
+                f_all = f.read()
+                say_message(f_all)
+                f.close()
+                os.remove('zap.txt')
+                now = strftime("%H:%M")    
+                say_message('текущее время '+ now) 
+            exit()
 
 def say_message(message):
     
@@ -55,35 +91,14 @@ def say_message(message):
     os.remove(file_voice_name)
     print("Маруся: "+message)
 
-
 if __name__ == '__main__':
-    
-    now = strftime("%H:%M")    
-    say_message('сейчас '+ now)
-    say_message('задай время')
-    
-    vivacuba = listen_command()
-    now = datetime.datetime.now()
-    if now.hour >= 0 and now.hour < 10 and len(vivacuba) != 5:
-        vivacuba = '0' + vivacuba
-    say_message('добавить описание при включении будильника? да или нет?')
+    beginning()
+        
+while True:
+    command = listen_command()
+    do_tris_command(command) 
 
-    message = listen_command()  # слушает команду
-    do_tris_command(message)  # обрабатывает команду
-
-    while True:
-        now = datetime.datetime.now()
-        now = strftime("%H:%M")
-        time.sleep(10)
-        if  now == vivacuba:
-            winsound.Beep(2500,1500)
-            f = open('C:/assistent_1/budilnic/zap.txt', 'r', encoding='utf-8')
-            f_all = f.read()
-            say_message(f_all)
-            f.close()
-            now = strftime("%H:%M")    
-            say_message('текущее время '+ now) 
-            exit()
+    
     
        
         
